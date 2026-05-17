@@ -99,7 +99,7 @@ app.use("/", AtividadeController);
 const port = 8080;
 
 connection
-  .sync({ alter: true })
+  .sync()
   .then(async () => {
     await seedHistorias();
     console.log("Banco sincronizado com sucesso.");

@@ -180,6 +180,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  border: none;
 }
 .btn-excluir-atividade:hover {
   background: #fee2e2;

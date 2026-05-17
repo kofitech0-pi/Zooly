@@ -16,8 +16,7 @@ const Turma = connection.define("turmas", {
   },
  codigo_turma: {
   type: Sequelize.STRING,
-  allowNull: true,
-  unique: true,
+  allowNull: true
 },
 });
 
