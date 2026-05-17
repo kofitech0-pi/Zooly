@@ -1,0 +1,186 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/navbar.ejs', { page: 'desempenho' }) %>
+<%- include('partials/topbar.ejs') %>
+
+<div class="page-content desempenho-page">
+  <div class="page-header desempenho-header">
+    <div>
+      <h1 class="page-title">Desempenho Acadêmico</h1>
+      <p class="page-subtitle">
+        Acompanhe o progresso fonético de cada turma de forma detalhada.
+      </p>
+    </div>
+
+    <div class="page-actions">
+      <select id="filtroTurma" class="form-input filtro-turma" onchange="carregarDesempenho()">
+        <option value="">Todas as turmas</option>
+
+        <% turmas.forEach(turma => { %>
+        <option value="<%= turma.id %>" <%= turmaSelecionada == turma.id ? 'selected' : '' %>>
+          <%= turma.nome %>
+        </option>
+        <% }) %>
+      </select>
+    </div>
+  </div>
+
+  <!-- CARDS DE MÉTRICAS -->
+  <div class="desempenho-stats">
+    <div class="stat-card-des">
+      <div class="stat-des-icon verde">
+        <i data-lucide="trending-up"></i>
+      </div>
+
+      <div>
+        <div class="stat-des-label">MÉDIA DA TURMA</div>
+        <div class="stat-des-value"><%= mediaGeral %>%</div>
+      </div>
+    </div>
+
+    <div class="stat-card-des">
+      <div class="stat-des-icon azul">
+        <i data-lucide="clipboard-check"></i>
+      </div>
+
+      <div>
+        <div class="stat-des-label">ATIVIDADES</div>
+        <div class="stat-des-value">
+          <%= totalAtividades %>
+          <span class="stat-des-unit">total</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card-des">
+      <div class="stat-des-icon vermelho">
+        <i data-lucide="triangle-alert"></i>
+      </div>
+
+      <div>
+        <div class="stat-des-label">DIFICULDADES</div>
+        <div class="stat-des-value">
+          <%= String(alunosDificuldade).padStart(2, '0') %>
+          <span class="stat-des-unit">alunos</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABELA -->
+  <div class="table-card desempenho-table-card">
+    <h2>Lista de Alunos</h2>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ALUNO</th>
+          <th>NÍVEL DE<br>LEITURA</th>
+          <th>PROGRESSO</th>
+          <th>ÚLTIMA<br>ATIVIDADE</th>
+          <th>AÇÕES</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% if (desempenhos && desempenhos.length > 0) { %>
+        <% desempenhos.forEach(aluno => { %>
+        <%
+                            const cor = aluno.progresso >= 70 ? 'progress-verde'
+                                      : aluno.progresso >= 40 ? 'progress-amarelo'
+                                      : 'progress-vermelho';
+
+                            const corTexto = aluno.progresso >= 70 ? '#166534'
+                                           : aluno.progresso >= 40 ? '#854d0e'
+                                           : '#b91c1c';
+
+                            const nivel_cls = aluno.nivel
+                                .toLowerCase()
+                                .replace('ç', 'c')
+                                .replace('é', 'e')
+                                .replace('á', 'a')
+                                .replace('ã', 'a')
+                                .replace(' ', '-');
+                        %>
+
+        <tr>
+          <td>
+            <div class="aluno-cell">
+              <div class="aluno-avatar aluno-avatar-img">
+                <img src="/img/<%= aluno.imagem %>" alt="<%= aluno.nome %>">
+              </div>
+
+              <div class="aluno-info-desempenho">
+                <strong><%= aluno.nome %></strong>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <span class="nivel-badge nivel-<%= nivel_cls %>">
+              <%= aluno.nivel %>
+            </span>
+          </td>
+
+          <td>
+            <div class="progress-cell">
+              <div class="progress-bar-des">
+                <div class="progress <%= cor %>" style="width: <%= aluno.progresso %>%;"></div>
+              </div>
+
+              <span class="progress-value" style="color: <%= corTexto %>;">
+                <%= aluno.progresso %>%
+              </span>
+            </div>
+          </td>
+
+          <td class="ultima-atividade">
+            <%= aluno.ultima_atividade %>
+          </td>
+
+          <td>
+            <button class="btn-view-detalhes" onclick="verDetalhes(<%= aluno.id %>)">
+              Ver<br>Detalhes
+            </button>
+          </td>
+        </tr>
+        <% }) %>
+        <% } else { %>
+        <tr>
+          <td colspan="5" class="empty-table-cell">
+            Nenhum desempenho registrado. Cadastre alunos nas turmas primeiro.
+          </td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+
+    <div class="table-actions">
+      <button class="btn-load-more">
+        <span>Carregar mais alunos</span>
+        <i data-lucide="chevron-down"></i>
+      </button>
+    </div>
+  </div>
+
+  <button class="btn-pdf-fixed" onclick="gerarRelatorioPDF()">
+    <i data-lucide="download"></i>
+    <span>Gerar Relatório PDF</span>
+  </button>
+</div>
+
+<script>
+  function carregarDesempenho() {
+    const turmaId = document.getElementById('filtroTurma').value;
+    window.location.href = turmaId ? '/desempenho/' + turmaId : '/desempenho';
+  }
+
+  function verDetalhes(alunoId) {
+    window.location.href = '/alunos/editar/' + alunoId;
+  }
+
+  function gerarRelatorioPDF() {
+    alert("Gerando relatório PDF...");
+  }
+</script>
+
+<%- include('partials/footer.ejs') %>

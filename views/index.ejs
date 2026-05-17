@@ -1,0 +1,137 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar', { page: 'home' }) %>
+<%- include('partials/topbar') %>
+
+<section class="page-content home-page">
+
+  <!-- Cabeçalho da Home -->
+  <div class="welcome-header">
+    <h1 class="page-title">Olá, Helena Ferreira!</h1>
+    <p>Aqui está um resumo das suas turmas e atividades</p>
+  </div>
+
+  <!-- Cards de resumo -->
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <div class="stat-icon-wrap">
+        <i data-lucide="graduation-cap"></i>
+      </div>
+      <div class="stat-label">Total de Turmas</div>
+      <div class="stat-value"><%= typeof totalTurmas !== 'undefined' ? totalTurmas : 2 %></div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon-wrap">
+        <i data-lucide="users"></i>
+      </div>
+      <div class="stat-label">Alunos Ativos</div>
+      <div class="stat-value"><%= typeof totalAlunos !== 'undefined' ? totalAlunos : 4 %></div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon-wrap">
+        <i data-lucide="badge-check"></i>
+      </div>
+      <div class="stat-label">Missões em OK</div>
+      <div class="stat-value"><%= typeof missoesOk !== 'undefined' ? missoesOk : 0 %></div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon-wrap">
+        <i data-lucide="calendar-days"></i>
+      </div>
+      <div class="stat-label">Última Missão</div>
+      <div class="stat-value stat-date">20/03/2026</div>
+    </div>
+
+  </div>
+
+  <!-- Histórico de desempenho -->
+  <div class="table-card home-history-card">
+
+    <div class="section-header">
+      <div>
+        <h2 class="page-title">Histórico de Desempenho</h2>
+        <p class="section-subtitle">Acompanhamento individual de progresso fonético</p>
+      </div>
+
+      <a href="/desempenho" class="btn-link">Ver Relatório Completo</a>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Estudante</th>
+            <th>Fonema</th>
+            <th>Palavras</th>
+            <th>Score</th>
+            <th>Data</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% desempenhos.forEach((desempenho) => { %>
+          <tr>
+
+            <td>
+              <div class="aluno-cell">
+
+                <div class="aluno-avatar aluno-avatar-img">
+                  <img src="/img/<%= desempenho.imagem %>" alt="<%= desempenho.estudante %>">
+                </div>
+
+                <strong><%= desempenho.estudante %></strong>
+
+              </div>
+            </td>
+
+            <td>
+              <span class="fonema-badge">
+                <%= desempenho.fonema %>
+              </span>
+            </td>
+
+            <td>
+              <%= desempenho.palavras %>
+            </td>
+
+            <td>
+              <div class="score-cell">
+
+                <div class="progress-bar-small">
+                  <div class="progress" style="width: <%= desempenho.score %>%;">
+                  </div>
+                </div>
+
+                <strong>
+                  <%= desempenho.score %>%
+                </strong>
+
+              </div>
+            </td>
+
+            <td>
+              <%= desempenho.data %>
+            </td>
+
+            <td>
+              <button class="btn-icon">
+                <i data-lucide="more-vertical"></i>
+              </button>
+            </td>
+
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+<%- include('partials/footer') %>

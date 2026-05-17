@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrar | Zooly Education</title>
+
+  <link rel="stylesheet" href="/css/auth.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="auth-body">
+
+  <header class="auth-top">
+
+    <nav class="auth-nav">
+      <a href="/login" class="auth-nav-active">Entrar</a>
+      <a href="/cadastro">Criar Conta</a>
+    </nav>
+
+  </header>
+
+  <main class="auth-main">
+
+    <section class="auth-card">
+
+      <div class="auth-logo">
+        <img src="/img/Logo.png" alt="Zooly Education">
+      </div>
+
+      <h1>Acesse sua conta</h1>
+
+      <p class="auth-subtitle">
+        Bem-vindo de volta ao Zooly Education.
+      </p>
+
+      <% if (erro) { %>
+        <p class="auth-erro"><%= erro %></p>
+      <% } %>
+
+      <form action="/login" method="POST" class="auth-form">
+
+        <div class="auth-form-group">
+          <label>E-mail</label>
+          <input type="email" name="email" placeholder="nome@exemplo.com" required>
+        </div>
+
+        <div class="auth-form-group auth-password">
+
+          <div class="auth-password-header">
+            <label>Senha</label>
+            <a href="#">Esqueci minha senha</a>
+          </div>
+
+          <div class="auth-password-wrap">
+            <input type="password" name="senha" placeholder="••••••••" required id="password">
+            <button type="button" class="toggle-password" id="togglePassword">
+              <i data-lucide="eye"></i>
+            </button>
+          </div>
+
+        </div>
+
+        <button type="submit" class="auth-submit">
+          Entrar
+        </button>
+
+        <p class="auth-link-text">
+          Ainda não tem uma conta?
+          <a href="/cadastro">Cadastre-se</a>
+        </p>
+
+      </form>
+
+    </section>
+
+  </main>
+
+ 
+
+  <script>
+    lucide.createIcons();
+
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+
+    togglePassword.addEventListener("click", () => {
+      const type =
+        passwordInput.getAttribute("type") === "password" ? "text" : "password";
+      passwordInput.setAttribute("type", type);
+    });
+  </script>
+
+</body>
+
+</html>

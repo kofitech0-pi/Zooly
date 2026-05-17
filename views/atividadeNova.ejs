@@ -1,0 +1,529 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/navbar.ejs', { page: 'atividades' }) %>
+<%- include('partials/topbar.ejs') %>
+
+<div class="page-content nova-atividade-page">
+
+  <div class="na-topbar">
+    <a href="/atividades" class="btn-back">
+      <i data-lucide="arrow-left"></i>
+      <span>Nova Atividade</span>
+    </a>
+  </div>
+
+  <form action="/atividades/cadastrar" method="POST" onsubmit="prepararEnvioAtividade()">
+    <div class="na-layout">
+
+      <!--  COLUNA ESQUERDA  -->
+      <div class="na-col-left">
+
+        <!-- INFORMAÇÕES GERAIS -->
+        <div class="na-card">
+          <div class="na-card-title">
+            <i data-lucide="clipboard-list"></i>
+            <span>Informações Gerais</span>
+          </div>
+
+          <div class="form-group">
+            <label class="na-label">NOME DA ATIVIDADE</label>
+            <input type="text" name="nome" class="na-input" placeholder="O Mistério das Matas" value="<%= historiaSelecionada ? 'Atividade: ' + historiaSelecionada.titulo : '' %>" required>
+          </div>
+
+          <div class="na-row3">
+            <div class="form-group">
+              <label class="na-label">SÉRIE / ANO</label>
+              <select name="serie_ano" class="na-input">
+                <option value="1º Ano Fundamental I">1º Ano Fundamental I</option>
+                <option value="2º Ano Fundamental I">2º Ano Fundamental I</option>
+                <option value="3º Ano Fundamental I">3º Ano Fundamental I</option>
+                <option value="4º Ano Fundamental I">4º Ano Fundamental I</option>
+                <option value="5º Ano Fundamental I">5º Ano Fundamental I</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="na-label">TURMA</label>
+              <select name="turma_id" class="na-input" required>
+                <option value="">Selecione...</option>
+                <% turmas.forEach(t => { %>
+                <option value="<%= t.id %>"><%= t.nome %></option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="na-label">DURAÇÃO ESTIMADA</label>
+              <div class="na-input-icon">
+                <i data-lucide="clock"></i>
+                <input type="text" name="duracao" class="na-input-inner" placeholder="45 min" value="45 min">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="na-card">
+          <div class="na-card-title">
+            <i data-lucide="book-open"></i>
+            <span>História da Atividade</span>
+          </div>
+
+          <div class="tipo-historia-opcoes">
+            <label class="tipo-historia-card">
+              <input type="radio" name="tipo_historia" value="biblioteca" checked onchange="alternarTipoHistoria()">
+              <span>Usar história da biblioteca</span>
+            </label>
+
+            <label class="tipo-historia-card">
+              <input type="radio" name="tipo_historia" value="propria" onchange="alternarTipoHistoria()">
+              <span>Escrever minha própria história</span>
+            </label>
+          </div>
+
+          <div id="areaHistoriaBiblioteca">
+            <label class="na-label">ESCOLHER HISTÓRIA</label>
+
+            <select name="historia_id" class="na-input" onchange="preencherHistoriaSelecionada(this)">
+              <option value="">Selecione uma história...</option>
+
+              <% historias.forEach(h => { %>
+              <option value="<%= h.id %>">
+                <%= h.titulo %> - <%= h.nivel_leitura %>
+              </option>
+              <% }) %>
+            </select>
+
+            <div class="historia-fixa-box" id="historiaFixaBox">
+              <p class="historia-vazia">Selecione uma história para visualizar o texto.</p>
+            </div>
+          </div>
+
+          <div id="areaHistoriaPropria" style="display: none;">
+            <label class="na-label">ESCREVA SUA HISTÓRIA</label>
+
+            <textarea name="historia_propria" class="na-textarea" rows="8" placeholder="Digite aqui a história que será usada na atividade..."></textarea>
+          </div>
+
+          <input type="hidden" name="historia" id="historiaHidden" value="">
+        </div>
+
+        <!-- FONEMA TRABALHADO -->
+        <div class="na-card">
+          <div class="na-card-title">
+            <i data-lucide="volume-2"></i>
+            <span>Fonema trabalhado</span>
+          </div>
+
+          <p class="na-card-sub">
+            Escolha o som que será trabalhado nesta atividade.
+          </p>
+
+          <div class="fonema-grid">
+            <% ['S', 'R', 'L', 'M', 'P', 'F', 'V', 'CH', 'LH', 'NH'].forEach(f => { %>
+            <label class="fonema-btn">
+              <input type="radio" name="fonema" value="<%= f %>" required>
+              <span><%= f %></span>
+            </label>
+            <% }) %>
+          </div>
+        </div>
+
+
+        <!-- QUESTÕES DA ATIVIDADE -->
+        <div class="na-card">
+          <div class="na-card-header-row">
+            <div class="na-card-title">
+              <i data-lucide="sparkles"></i>
+              <span>Questões da Atividade</span>
+            </div>
+
+            <div class="na-card-actions">
+              <button type="button" class="btn-nova-questao" onclick="adicionarQuestao()">
+                <i data-lucide="plus"></i>
+                <span>Nova questão</span>
+              </button>
+
+              <button type="button" class="btn-gerar-ia">
+                <i data-lucide="wand-sparkles"></i>
+                <span>Gerar com IA</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Cabeçalho tabela -->
+          <div class="questoes-header">
+            <span>ORDEM</span>
+            <span>TIPO</span>
+            <span>PONTOS</span>
+            <span>ENUNCIADO</span>
+            <span>TAGS</span>
+            <span>AÇÕES</span>
+          </div>
+
+          <!-- Lista de questões dinâmica -->
+          <div id="questoesList"></div>
+
+          <button type="button" class="btn-add-questao" onclick="adicionarQuestao()">
+            <i data-lucide="plus"></i>
+            <span>Adicionar mais uma questão</span>
+          </button>
+
+          <!-- Campos técnicos -->
+
+          <input type="hidden" name="pontos_total" id="pontosTotal" value="0">
+          <input type="hidden" name="status" value="Agendada">
+        </div>
+
+        <!-- RECOMPENSA -->
+        <div class="na-card">
+          <div class="na-card-title">
+            <i data-lucide="trophy"></i>
+            <span>Recompensa</span>
+          </div>
+
+          <div class="recompensa-row">
+            <span class="recompensa-label">Total da Atividade:</span>
+            <span class="recompensa-pts" id="recompensaPts">0 pts</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ═══════════ COLUNA DIREITA ═══════════ -->
+      <div class="na-col-right">
+
+        <!-- COMO O ALUNO IRÁ INTERAGIR -->
+        <div class="na-card">
+          <div class="na-card-title">
+            <i data-lucide="mouse-pointer-click"></i>
+            <span>Como o aluno irá interagir?</span>
+          </div>
+
+          <p class="na-card-sub">
+            Selecione as formas de interação que serão utilizadas.
+          </p>
+
+          <div class="interacao-grid">
+            <label class="interacao-btn" id="lbl-ler">
+              <input type="checkbox" name="interacao_ler" onchange="toggleInteracao(this, 'lbl-ler')">
+              <i data-lucide="book-open"></i>
+              <span>Ler</span>
+            </label>
+
+            <label class="interacao-btn" id="lbl-ouvir">
+              <input type="checkbox" name="interacao_ouvir" onchange="toggleInteracao(this, 'lbl-ouvir')">
+              <i data-lucide="headphones"></i>
+              <span>Ouvir</span>
+            </label>
+
+            <label class="interacao-btn" id="lbl-falar">
+              <input type="checkbox" name="interacao_falar" onchange="toggleInteracao(this, 'lbl-falar')">
+              <i data-lucide="mic"></i>
+              <span>Falar</span>
+            </label>
+
+            <label class="interacao-btn" id="lbl-escrever">
+              <input type="checkbox" name="interacao_escrever" onchange="toggleInteracao(this, 'lbl-escrever')">
+              <i data-lucide="pencil-line"></i>
+              <span>Escrever</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- MISSÃO DO ALUNO -->
+        <div class="na-card">
+          <div class="na-card-title">
+            <i data-lucide="target"></i>
+            <span>Missão do Aluno</span>
+          </div>
+
+          <p class="na-card-sub">O aluno irá:</p>
+
+          <div class="missao-grid">
+            <label class="missao-item" id="lbl-m1">
+              <input type="checkbox" name="missao_ler_texto" onchange="toggleMissao(this, 'lbl-m1')">
+              <span class="missao-check">
+                <i data-lucide="check"></i>
+              </span>
+              <span>Ler um texto</span>
+            </label>
+
+            <label class="missao-item" id="lbl-m2">
+              <input type="checkbox" name="missao_completar" onchange="toggleMissao(this, 'lbl-m2')">
+              <span class="missao-check">
+                <i data-lucide="check"></i>
+              </span>
+              <span>Completar palavras</span>
+            </label>
+
+            <label class="missao-item" id="lbl-m3">
+              <input type="checkbox" name="missao_escutar" onchange="toggleMissao(this, 'lbl-m3')">
+              <span class="missao-check">
+                <i data-lucide="check"></i>
+              </span>
+              <span>Escutar e escrever</span>
+            </label>
+
+            <label class="missao-item" id="lbl-m4">
+              <input type="checkbox" name="missao_identificar" onchange="toggleMissao(this, 'lbl-m4')">
+              <span class="missao-check">
+                <i data-lucide="check"></i>
+              </span>
+              <span>Identificar sons</span>
+            </label>
+
+            <label class="missao-item" id="lbl-m5">
+              <input type="checkbox" name="missao_responder" onchange="toggleMissao(this, 'lbl-m5')">
+              <span class="missao-check">
+                <i data-lucide="check"></i>
+              </span>
+              <span>Responder perguntas</span>
+            </label>
+          </div>
+
+          <p class="na-ou">OU DESCREVA MANUALMENTE:</p>
+
+          <textarea name="missao_descricao" class="na-textarea-sm" placeholder="O aluno irá ler, compreender e responder perguntas sobre a história da floresta..." maxlength="300"></textarea>
+        </div>
+
+        <!-- BNCC -->
+        <div class="na-card">
+          <div class="na-card-title">
+            <i data-lucide="clipboard-check"></i>
+            <span>BNCC</span>
+          </div>
+
+          <p class="na-card-sub">HABILIDADES SELECIONADAS</p>
+
+          <div class="bncc-tags" id="bnccTags"></div>
+
+          <div class="bncc-input-row">
+            <input type="text" id="bnccInput" class="na-input" placeholder="Ex: EF01LP05" style="font-size:12px; padding:8px 12px;" onkeydown="if(event.key==='Enter'){event.preventDefault();adicionarBNCC();}">
+
+            <button type="button" class="btn-add-bncc" onclick="adicionarBNCC()">
+              <i data-lucide="plus"></i>
+              <span>Adicionar habilidade</span>
+            </button>
+          </div>
+
+          <input type="hidden" name="bncc_habilidades" id="bnccHidden" value="">
+        </div>
+
+        <!-- DICA IA -->
+        <div class="na-card na-card-dica">
+          <p>
+            <i data-lucide="lightbulb"></i>
+            <strong>Dica:</strong>
+            Use o botão "Gerar com IA" para criar questões automaticamente baseadas na sua história e missão.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BOTÕES FIXOS NO RODAPÉ -->
+    <div class="na-footer">
+      <a href="/atividades" class="btn-cancel-na">Cancelar</a>
+
+      <button type="submit" class="btn-salvar-na">
+        <i data-lucide="save"></i>
+        <span>Salvar Atividade</span>
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const historiasFormulario = <%- JSON.stringify((historias || []).map(h => ({
+    id: h.id,
+    titulo: h.titulo,
+    texto: h.texto,
+    descricao_curta: h.descricao_curta
+  }))) %>;
+
+  function preencherHistoriaSelecionada(select) {
+    const historia = historiasFormulario.find(h => String(h.id) === String(select.value));
+    const box = document.getElementById('historiaFixaBox');
+    const historiaHidden = document.getElementById('historiaHidden');
+    const nomeInput = document.querySelector('input[name="nome"]');
+
+    if (!historia) {
+      box.innerHTML = `<p class="historia-vazia">Selecione uma história para visualizar o texto.</p>`;
+      historiaHidden.value = '';
+      return;
+    }
+
+    box.innerHTML = `
+    <h4>${historia.titulo}</h4>
+    <p class="historia-descricao">${historia.descricao_curta || ''}</p>
+    <div class="historia-texto-fixo">${historia.texto}</div>
+  `;
+
+    historiaHidden.value = historia.texto;
+
+    if (!nomeInput.value || nomeInput.value.startsWith('Atividade:')) {
+      nomeInput.value = 'Atividade: ' + historia.titulo;
+    }
+  }
+
+  function alternarTipoHistoria() {
+    const tipo = document.querySelector('input[name="tipo_historia"]:checked').value;
+
+    const areaBiblioteca = document.getElementById('areaHistoriaBiblioteca');
+    const areaPropria = document.getElementById('areaHistoriaPropria');
+    const historiaHidden = document.getElementById('historiaHidden');
+
+    if (tipo === 'biblioteca') {
+      areaBiblioteca.style.display = 'block';
+      areaPropria.style.display = 'none';
+
+      const select = document.querySelector('select[name="historia_id"]');
+      if (select.value) {
+        preencherHistoriaSelecionada(select);
+      }
+    } else {
+      areaBiblioteca.style.display = 'none';
+      areaPropria.style.display = 'block';
+      historiaHidden.value = '';
+    }
+  }
+
+  function prepararEnvioAtividade() {
+    const tipo = document.querySelector('input[name="tipo_historia"]:checked').value;
+    const historiaHidden = document.getElementById('historiaHidden');
+    const historiaId = document.querySelector('select[name="historia_id"]');
+
+    if (tipo === 'propria') {
+      const historiaPropria = document.querySelector('textarea[name="historia_propria"]').value;
+      historiaHidden.value = historiaPropria;
+      historiaId.value = '';
+    }
+  }
+
+
+  function contarChars(el) {
+    document.getElementById('charCount').textContent = el.value.length + '/900';
+  }
+
+  function toggleInteracao(cb, lblId) {
+    const lbl = document.getElementById(lblId);
+    lbl.classList.toggle('active', cb.checked);
+  }
+
+  function toggleMissao(cb, lblId) {
+    const lbl = document.getElementById(lblId);
+    lbl.classList.toggle('active', cb.checked);
+  }
+
+  let questaoCount = 0;
+  const tiposQuestao = ['Leitura e interpretação', 'Completar palavra', 'Identificar sons', 'Escrita livre'];
+
+  function adicionarQuestao() {
+    questaoCount++;
+    const list = document.getElementById('questoesList');
+
+    const div = document.createElement('div');
+    div.className = 'questao-item';
+    div.id = 'questao-' + questaoCount;
+
+    div.innerHTML = `
+        <div class="q-numero">${questaoCount}</div>
+
+        <div class="q-tipo">
+            <select class="na-input-sm" name="q_tipo_${questaoCount}">
+                ${tiposQuestao.map(t => `<option value="${t}">${t}</option>`).join('')}
+            </select>
+        </div>
+
+        <div class="q-pontos">
+            <input
+                type="number"
+                name="q_pontos_${questaoCount}"
+                value="10"
+                class="na-input-sm q-pontos-input"
+                min="1"
+                max="100"
+                onchange="atualizarPontos()"
+            >
+            <span>pts</span>
+        </div>
+
+        <div class="q-enunciado">
+            <input
+                type="text"
+                name="q_enunciado_${questaoCount}"
+                class="na-input-sm"
+                placeholder="Digite o enunciado da questão..."
+            >
+        </div>
+
+        <div class="q-tags">
+            <span class="q-tag-alt">--</span>
+        </div>
+
+        <div class="q-acoes">
+            <button type="button" onclick="removerQuestao(${questaoCount})" class="q-btn-del" title="Excluir questão">
+                <i data-lucide="trash-2"></i>
+            </button>
+        </div>
+    `;
+
+    list.appendChild(div);
+    atualizarPontos();
+    lucide.createIcons();
+  }
+
+  function removerQuestao(id) {
+    document.getElementById('questao-' + id)?.remove();
+    atualizarPontos();
+  }
+
+  function atualizarPontos() {
+    let total = 0;
+
+    document.querySelectorAll('[name^="q_pontos_"]').forEach(el => {
+      total += parseInt(el.value) || 0;
+    });
+
+    document.getElementById('pontosTotal').value = total;
+    document.getElementById('recompensaPts').textContent = total + ' pts';
+  }
+
+  let bnccList = [];
+
+  function adicionarBNCC() {
+    const input = document.getElementById('bnccInput');
+    const val = input.value.trim().toUpperCase();
+
+    if (!val || bnccList.includes(val)) {
+      input.value = '';
+      return;
+    }
+
+    bnccList.push(val);
+    renderBNCC();
+    input.value = '';
+  }
+
+  function removerBNCC(tag) {
+    bnccList = bnccList.filter(b => b !== tag);
+    renderBNCC();
+  }
+
+  function renderBNCC() {
+    const container = document.getElementById('bnccTags');
+
+    container.innerHTML = bnccList.map(t =>
+      `<span class="bncc-tag">
+            ${t}
+            <button type="button" onclick="removerBNCC('${t}')" class="bncc-remove">
+                <i data-lucide="x"></i>
+            </button>
+        </span>`
+    ).join('');
+
+    document.getElementById('bnccHidden').value = bnccList.join(',');
+    lucide.createIcons();
+  }
+</script>
+
+<%- include('partials/footer.ejs') %>

@@ -1,0 +1,230 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/navbar.ejs', { page: 'atividades' }) %>
+<%- include('partials/topbar.ejs') %>
+
+<div class="page-content atividades-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Atividades</h1>
+      <p class="page-subtitle">Gerencie as missões e escolha histórias do folclore do Vale do Ribeira para trabalhar fonemas.</p>
+    </div>
+    <a href="/atividades/nova" class="btn-primary">
+      <i data-lucide="plus"></i>
+      <span>Nova Atividade</span>
+    </a>
+  </div>
+
+  <div class="atividades-main-tabs">
+    <button type="button" class="main-tab-btn active" onclick="trocarAbaAtividades('minhas', this)">
+      <i data-lucide="clipboard-list"></i>
+      Minhas Atividades
+    </button>
+    <button type="button" class="main-tab-btn" onclick="trocarAbaAtividades('biblioteca', this)">
+      <i data-lucide="book-open"></i>
+      Biblioteca de Histórias
+    </button>
+  </div>
+
+  <section id="aba-minhas" class="atividades-section active">
+    <div class="section-row-title">
+      <div>
+        <h2>Minhas Atividades</h2>
+        <p>Atividades criadas para suas turmas.</p>
+      </div>
+    </div>
+
+    <div class="turma-tabs">
+      <% if (turmas && turmas.length > 0) { %>
+        <% turmas.forEach((turma, index) => { %>
+        <button type="button"
+          class="tab-btn <%= index === 0 ? 'active' : '' %>"
+          data-turma-id="<%= turma.id %>"
+          onclick="filtrarAtividades('<%= turma.id %>', this)">
+          <%= turma.nome %>
+        </button>
+        <% }) %>
+      <% } else { %>
+        <button class="tab-btn active">Nenhuma turma cadastrada</button>
+      <% } %>
+    </div>
+
+    <% if (atividades && atividades.length > 0) { %>
+    <div class="atividades-grid" id="atividades-grid">
+      <% const icones  = ['paw-print','trees','book-open','volume-2','star','zap'];
+         const iCores  = ['azul','amarelo','azul','vermelho','verde','roxo'];
+         atividades.forEach((atv, idx) => {
+           const isAndamento = atv.status === 'Em Andamento' || atv.status === 'Em andamento';
+           const prog = isAndamento ? 75 : 0;
+           const ic = icones[idx % icones.length];
+           const icor = iCores[idx % iCores.length];
+      %>
+      <div class="atividade-card-figma" data-turma-id="<%= atv.turma_id %>">
+        <div class="atividade-card-top">
+          <div class="atividade-icon <%= icor %>">
+            <i data-lucide="<%= ic %>"></i>
+          </div>
+          <span class="status-badge <%= isAndamento ? 'status-em-andamento' : 'status-agendada' %>">
+            <%= isAndamento ? 'EM ANDAMENTO' : 'AGENDADA' %>
+          </span>
+        </div>
+        <h3 class="atividade-nome"><%= atv.nome %></h3>
+        <% if (atv.historiaSelecionada) { %>
+          <p class="atividade-historia">História: <strong><%= atv.historiaSelecionada.titulo %></strong></p>
+        <% } %>
+        <p class="atividade-fonema">Fonema: <strong><%= atv.fonema || '/a/' %></strong></p>
+        <div class="atividade-progress">
+          <div class="progress-bar">
+            <div class="progress <%= isAndamento ? '' : 'progress-vazia' %>" style="width:<%= prog %>%"></div>
+          </div>
+        </div>
+        <div class="atividade-footer">
+          <span><%= isAndamento ? '24/32 Alunos' : 'Inicia em breve' %></span>
+          <div class="atividade-actions">
+            <a href="/atividades/editar/<%= atv.id %>" class="btn-visualizar">
+              Visualizar <i data-lucide="arrow-right"></i>
+            </a>
+            <form action="/atividades/excluir/<%= atv.id %>" method="POST" style="display:inline">
+              <button type="submit"
+                onclick="return confirm('Excluir <%= atv.nome %>?')"
+                class="btn-excluir-atividade">
+                <i data-lucide="trash-2"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+
+    <div id="vazio-turma" class="empty-state" style="display:none;margin-top:16px;">
+      <p>Nenhuma atividade para esta turma.</p>
+      <a href="/atividades/nova" class="btn-primary" style="margin-top:12px;"><i data-lucide="plus"></i> Criar Atividade</a>
+    </div>
+    <% } else { %>
+      <div class="atividades-empty">
+        <h3>Nenhuma atividade criada ainda</h3>
+        <p>Comece criando uma atividade manualmente ou usando uma história da biblioteca.</p>
+        <a href="/atividades/nova" class="btn-primary"><i data-lucide="plus"></i> Criar Atividade</a>
+      </div>
+    <% } %>
+  </section>
+
+  <section id="aba-biblioteca" class="atividades-section">
+    <div class="section-row-title">
+      <div>
+        <h2>Biblioteca de Histórias</h2>
+        <p>Histórias prontas do folclore do Vale do Ribeira para transformar em atividade.</p>
+      </div>
+    </div>
+
+    <% if (historias && historias.length > 0) { %>
+    <div class="historias-grid">
+      <% historias.forEach((historia) => { %>
+      <div class="historia-card">
+        <div class="historia-emoji"><%= historia.imagem || '📖' %></div>
+        <div class="historia-content">
+          <div class="historia-meta">
+            <span><%= historia.categoria || 'Folclore' %></span>
+            <span><%= historia.nivel_leitura %></span>
+          </div>
+          <h3><%= historia.titulo %></h3>
+          <p><%= historia.descricao_curta %></p>
+          <small><i data-lucide="map-pin"></i> <%= historia.origem || 'Vale do Ribeira' %></small>
+        </div>
+        <div class="historia-actions">
+          <button type="button" class="btn-ver-historia" onclick="abrirModalHistoria('<%= historia.id %>')">
+            Ver história
+          </button>
+          <a class="btn-criar-com-historia" href="/atividades/nova?historia_id=<%= historia.id %>">
+            Criar atividade
+          </a>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+    <% } else { %>
+      <div class="atividades-empty">
+        <h3>Nenhuma história cadastrada</h3>
+        <p>Quando as histórias forem cadastradas no banco, elas aparecerão aqui.</p>
+      </div>
+    <% } %>
+  </section>
+</div>
+
+<% if (historias && historias.length > 0) { %>
+<div class="historia-modal-backdrop" id="historiaModal" onclick="fecharModalHistoria(event)">
+  <div class="historia-modal">
+    <button type="button" class="modal-close" onclick="fecharModalHistoria()"><i data-lucide="x"></i></button>
+    <div class="historia-modal-emoji" id="modalEmoji">📖</div>
+    <span class="historia-modal-nivel" id="modalNivel">Fácil</span>
+    <h2 id="modalTitulo">Título da história</h2>
+    <p id="modalOrigem" class="modal-origem"></p>
+    <div id="modalTexto" class="modal-texto"></div>
+    <a id="modalCriarLink" href="/atividades/nova" class="btn-primary modal-btn-criar">
+      <i data-lucide="plus"></i>
+      Criar atividade com esta história
+    </a>
+  </div>
+</div>
+<% } %>
+
+<script>
+const historiasData = <%- JSON.stringify((historias || []).map(h => ({
+  id: h.id,
+  titulo: h.titulo,
+  descricao_curta: h.descricao_curta,
+  texto: h.texto,
+  nivel_leitura: h.nivel_leitura,
+  origem: h.origem,
+  categoria: h.categoria,
+  imagem: h.imagem
+}))) %>;
+
+function trocarAbaAtividades(aba, btn) {
+  document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  document.querySelectorAll('.atividades-section').forEach(section => section.classList.remove('active'));
+  document.getElementById(aba === 'biblioteca' ? 'aba-biblioteca' : 'aba-minhas').classList.add('active');
+}
+
+function filtrarAtividades(turmaId, btn) {
+  document.querySelectorAll('.turma-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const cards = document.querySelectorAll('.atividade-card-figma');
+  const vazio = document.getElementById('vazio-turma');
+  let vis = 0;
+  cards.forEach(c => {
+    if (c.dataset.turmaId === String(turmaId)) { c.style.display = 'block'; vis++; }
+    else c.style.display = 'none';
+  });
+  if (vazio) vazio.style.display = vis === 0 ? 'block' : 'none';
+}
+
+function abrirModalHistoria(id) {
+  const historia = historiasData.find(h => String(h.id) === String(id));
+  if (!historia) return;
+
+  document.getElementById('modalEmoji').textContent = historia.imagem || '📖';
+  document.getElementById('modalNivel').textContent = historia.nivel_leitura || 'Fácil';
+  document.getElementById('modalTitulo').textContent = historia.titulo;
+  document.getElementById('modalOrigem').textContent = historia.origem || 'Vale do Ribeira';
+  document.getElementById('modalTexto').textContent = historia.texto;
+  document.getElementById('modalCriarLink').href = '/atividades/nova?historia_id=' + historia.id;
+  document.getElementById('historiaModal').classList.add('active');
+}
+
+function fecharModalHistoria(event) {
+  if (event && event.target.id !== 'historiaModal') return;
+  const modal = document.getElementById('historiaModal');
+  if (modal) modal.classList.remove('active');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const primeiro = document.querySelector('.turma-tabs .tab-btn');
+  if (primeiro && primeiro.dataset.turmaId) filtrarAtividades(primeiro.dataset.turmaId, primeiro);
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+});
+</script>
+
+<%- include('partials/footer.ejs') %>

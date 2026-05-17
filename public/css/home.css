@@ -1,0 +1,108 @@
+.home-page {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-top: 34px;
+}
+.home-page .welcome-header {
+  margin-bottom: 22px;
+}
+.home-page .welcome-header h1 {
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+.home-page .welcome-header p {
+  font-size: 13px;
+  color: var(--texto-sub);
+  margin-top: 4px;
+}
+.home-page .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 28px;
+}
+.home-page .stat-card {
+  min-height: 112px;
+  padding: 20px 22px;
+  border-radius: 24px;
+  border: none;
+  box-shadow: var(--sombra-sm);
+}
+.home-page .stat-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin-bottom: 16px;
+}
+.home-page .stat-label {
+  font-size: 9px;
+}
+.home-page .stat-value {
+  font-size: 25px;
+  line-height: 1;
+}
+.home-page .stat-date {
+  font-size: 22px;
+  white-space: nowrap;
+}
+.home-page .home-history-card {
+  background: #fff;
+  border-radius: 28px;
+  border: none;
+  padding: 26px 30px 20px;
+  box-shadow: var(--sombra-sm);
+}
+.home-page .home-history-card .section-header {
+  margin-bottom: 22px;
+}
+.home-page .home-history-card .section-header h2 {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.home-page .home-history-card .section-subtitle {
+  font-size: 13px;
+  margin-top: 3px;
+  margin-bottom: 0;
+}
+.home-page .home-history-card .btn-link {
+  font-size: 12px;
+}
+.home-page .data-table th {
+  font-size: 9px;
+  padding: 14px 10px 12px;
+}
+.home-page .data-table td {
+  padding: 14px 10px;
+  font-size: 12px;
+}
+.home-page .aluno-cell {
+  gap: 10px;
+}
+.home-page .aluno-avatar-img {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+}
+.home-page .aluno-avatar-img img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+.home-page .fonema-badge {
+  font-size: 11px;
+  padding: 3px 9px;
+}
+.home-page .progress-bar-small {
+  width: 70px;
+  height: 6px;
+}
+.home-page .score-cell {
+  gap: 8px;
+}
+.home-page .btn-icon svg {
+  width: 17px;
+  height: 17px;
+}

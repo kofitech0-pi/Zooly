@@ -1,0 +1,149 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/navbar.ejs', { page: 'turmas' }) %>
+<%- include('partials/topbar.ejs') %>
+
+<div class="page-content turmas-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Turmas</h1>
+      <p class="page-subtitle">
+        Gerencie suas turmas e mascotes. Acompanhe o progresso de cada grupo de forma intuitiva.
+      </p>
+    </div>
+    <button class="btn-primary" onclick="abrirModal('modalCadastro')">
+      <i data-lucide="user-plus"></i>
+      <span>+ Nova Turma</span>
+    </button>
+  </div>
+
+  <div class="turmas-grid">
+    <% if (turmas && turmas.length > 0) { %>
+    <% const bgCores = ['bg-amarelo','bg-verde','bg-laranja','bg-azul','bg-roxo'];
+         const labelCores = ['amarelo','verde','laranja','verde','verde'];
+         const nomesMascotes = {
+           'cobra-vetor.png': 'Cobra',
+           'lagarto-vetor.png': 'Lagarto',
+           'papagaio-vetor.png': 'Papagaio',
+           'sarue-vetor.png': 'Saruê',
+           'Leão': 'Cobra',
+           'Arara': 'Papagaio',
+           'Macaco': 'Lagarto',
+           'Coelho': 'Saruê',
+           'Pata': 'Cobra'
+         };
+         const arquivosMascotes = {
+           'Leão': 'cobra-vetor.png',
+           'Arara': 'papagaio-vetor.png',
+           'Macaco': 'lagarto-vetor.png',
+           'Coelho': 'sarue-vetor.png',
+           'Pata': 'cobra-vetor.png'
+         };
+         turmas.forEach((turma, i) => {
+           const bg = bgCores[i % bgCores.length];
+           const lc = labelCores[i % labelCores.length];
+           const mascoteArquivo = arquivosMascotes[turma.mascote] || turma.mascote || 'cobra-vetor.png';
+           const mascoteNome = nomesMascotes[mascoteArquivo] || mascoteArquivo;
+      %>
+    <div class="turma-card" onclick="window.location.href='/turmas/<%= turma.id %>/alunos'">
+      <div class="turma-card-header">
+        <div class="mascote-icon <%= bg %>"><img src="/img/<%= mascoteArquivo %>" alt="Mascote <%= mascoteNome %>"></div>
+        <div style="display:flex;gap:4px;align-items:center;">
+          <a href="/turmas/editar/<%= turma.id %>" onclick="event.stopPropagation()" title="Editar" style="padding:4px 6px;border-radius:6px;font-size:15px;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='none'">
+            <i data-lucide="pencil" style="width:14px;height:14px;color:var(--texto-sub)"></i>
+          </a>
+          <form action="/turmas/excluir/<%= turma.id %>" method="POST" style="display:inline" onclick="event.stopPropagation()">
+            <button type="submit" onclick="return confirm('Excluir <%= turma.nome %>?')" title="Excluir" style="background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:6px;font-size:15px;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='none'">
+              <i data-lucide="trash-2" style="width:14px;height:14px;color:#dc2626"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="mascote-label <%= lc %>">MASCOTE: <%= mascoteNome.toUpperCase() %></div>
+      <h3 class="turma-nome"><%= turma.nome %></h3>
+      
+
+      <p class="turma-periodo">Período: <%= turma.periodo %></p>
+
+      <p class="turma-periodo">
+        Código da turma: <strong><%= turma.codigo_turma || 'Será gerado ao atualizar' %></strong>
+      </p>
+
+      <div class="turma-stats">
+        <span class="alunos-count">
+          <i data-lucide="users"></i>
+          <%= turma.totalAlunos || 0 %> Alunos
+        </span>
+      </div>
+    </div>
+    <% }) %>
+    <% } else { %>
+    <div class="empty-state">
+      <p>Nenhuma turma cadastrada ainda.<br>Clique em "+ Nova Turma" para começar!</p>
+    </div>
+    <% } %>
+  </div>
+</div>
+
+<!-- MODAL CADASTRO -->
+<div id="modalCadastro" class="modal-overlay" style="display:none;">
+  <div class="modal">
+    <h2>Cadastrar Nova Turma</h2>
+    <p class="modal-subtitle">Preencha os dados abaixo para iniciar sua jornada criativa com novos alunos.</p>
+
+    <form action="/turmas/cadastrar" method="POST">
+      <div class="form-group">
+        <label>Nome da Turma</label>
+        <div class="modal-input-icon">
+          <i data-lucide="graduation-cap"></i>
+          <input type="text" name="nome" placeholder="Ex: Pintura Contemporânea II" class="form-input-plain" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Período</label>
+        <div class="modal-input-icon">
+          <i data-lucide="clock"></i>
+          <select name="periodo" class="form-input-plain" required>
+            <option value="">Selecione...</option>
+            <option value="Manhã">Manhã</option>
+            <option value="Tarde">Tarde</option>
+            <option value="Integral">Integral</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Escolha um Mascote</label>
+        <div class="mascotes-grid-modal">
+          <label class="mascote-circulo">
+            <input type="radio" name="mascote" value="cobra-vetor.png" required>
+            <span class="circulo"><img src="/img/cobra-vetor.png" alt="Cobra"></span>
+          </label>
+          <label class="mascote-circulo">
+            <input type="radio" name="mascote" value="lagarto-vetor.png">
+            <span class="circulo"><img src="/img/lagarto-vetor.png" alt="Lagarto"></span>
+          </label>
+          <label class="mascote-circulo">
+            <input type="radio" name="mascote" value="papagaio-vetor.png">
+            <span class="circulo"><img src="/img/papagaio-vetor.png" alt="Papagaio"></span>
+          </label>
+          <label class="mascote-circulo">
+            <input type="radio" name="mascote" value="sarue-vetor.png">
+            <span class="circulo"><img src="/img/sarue-vetor.png" alt="Saruê"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-buttons">
+        <button type="button" class="btn-cancel" onclick="fecharModal('modalCadastro')">Cancelar</button>
+        <button type="submit" class="btn-primary">
+          <i data-lucide="check"></i>
+          <span>Criar Turma</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/footer.ejs') %>

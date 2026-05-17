@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criar Conta | Zooly Education</title>
+
+  <link rel="stylesheet" href="/css/auth.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="auth-body">
+
+  <header class="auth-top">
+    
+
+    <nav class="auth-nav">
+      <a href="/login">Entrar</a>
+      <a href="/cadastro" class="auth-nav-active">Criar Conta</a>
+    </nav>
+  </header>
+
+  <main class="auth-main">
+    <section class="auth-card">
+
+      <div class="auth-logo">
+        <img src="/img/Logo.png" alt="Zooly Education">
+      </div>
+
+      <h1>Crie sua conta</h1>
+      <p class="auth-subtitle">
+        Junte-se ao Zooly Education e comece a transformar a leitura.
+      </p>
+
+      <% if (erro) { %>
+        <p class="auth-erro"><%= erro %></p>
+      <% } %>
+
+      <form action="/cadastro" method="POST" class="auth-form">
+
+        <div class="auth-form-group">
+          <label>Nome completo</label>
+          <input type="text" name="nome" placeholder="Como deseja ser chamado?" required>
+        </div>
+
+        <div class="auth-form-group">
+          <label>E-mail</label>
+          <input type="email" name="email" placeholder="seu@email.com" required>
+        </div>
+
+        <div class="auth-form-group">
+          <label>Código da escola</label>
+          <input type="text" name="codigo_escola" placeholder="Insira o código da sua escola" required>
+        </div>
+
+        <div class="auth-form-group auth-password">
+          <label>Senha</label>
+          <div class="auth-password-wrap">
+            <input type="password" name="senha" placeholder="Mínimo 8 caracteres" required id="password">
+            <button type="button" class="toggle-password" id="togglePassword">
+              <i data-lucide="eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="auth-form-group">
+          <label>Confirmar senha</label>
+          <input type="password" name="confirmar_senha" placeholder="Repita sua senha" required>
+        </div>
+
+        <button type="submit" class="auth-submit">
+          Cadastrar
+        </button>
+
+        <p class="auth-link-text">
+          Já tem uma conta?
+          <a href="/login">Entrar</a>
+        </p>
+
+      </form>
+    </section>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+
+    togglePassword.addEventListener("click", () => {
+      const type =
+        passwordInput.getAttribute("type") === "password" ? "text" : "password";
+      passwordInput.setAttribute("type", type);
+    });
+  </script>
+
+</body>
+
+</html>

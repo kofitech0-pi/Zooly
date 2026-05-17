@@ -1,0 +1,95 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/navbar.ejs', { page: 'turmas' }) %>
+<%- include('partials/topbar.ejs') %>
+
+<div class="page-content turmas-page turma-editar-page">
+  <a href="/turmas" class="btn-back">
+    <i data-lucide="arrow-left"></i>
+    <span>Voltar para Turmas</span>
+  </a>
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Editar Turma</h1>
+      <p class="page-subtitle">
+        Atualize os dados da turma selecionada.
+      </p>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <form action="/turmas/alterar" method="POST">
+      <input type="hidden" name="id" value="<%= turma.id %>">
+
+      <div class="form-group">
+        <label>Nome da Turma</label>
+        <input type="text" name="nome" value="<%= turma.nome %>" class="form-input" required>
+      </div>
+
+      <div class="form-group">
+        <label>Período</label>
+        <select name="periodo" class="form-input" required>
+          <option value="Manhã" <%= turma.periodo === 'Manhã' ? 'selected' : '' %>>
+            Manhã
+          </option>
+
+          <option value="Tarde" <%= turma.periodo === 'Tarde' ? 'selected' : '' %>>
+            Tarde
+          </option>
+
+          <option value="Integral" <%= turma.periodo === 'Integral' ? 'selected' : '' %>>
+            Integral
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Código da Turma</label>
+        <input type="text" value="<%= turma.codigo_turma || 'Será gerado automaticamente' %>" class="form-input" readonly>
+      </div>
+
+      <div class="form-group">
+        <label>Mascote</label>
+
+        <div class="mascotes-grid">
+          <% const mascoteAtual = turma.mascote || 'cobra-vetor.png'; %>
+          <label class="mascote-option">
+            <input type="radio" name="mascote" value="cobra-vetor.png" <%= mascoteAtual === 'cobra-vetor.png' ? 'checked' : '' %>>
+            <span class="emoji-mascote"><img src="/img/cobra-vetor.png" alt="Cobra"></span>
+            <span>Cobra</span>
+          </label>
+
+          <label class="mascote-option">
+            <input type="radio" name="mascote" value="lagarto-vetor.png" <%= mascoteAtual === 'lagarto-vetor.png' ? 'checked' : '' %>>
+            <span class="emoji-mascote"><img src="/img/lagarto-vetor.png" alt="Lagarto"></span>
+            <span>Lagarto</span>
+          </label>
+
+          <label class="mascote-option">
+            <input type="radio" name="mascote" value="papagaio-vetor.png" <%= mascoteAtual === 'papagaio-vetor.png' ? 'checked' : '' %>>
+            <span class="emoji-mascote"><img src="/img/papagaio-vetor.png" alt="Papagaio"></span>
+            <span>Papagaio</span>
+          </label>
+
+          <label class="mascote-option">
+            <input type="radio" name="mascote" value="sarue-vetor.png" <%= mascoteAtual === 'sarue-vetor.png' ? 'checked' : '' %>>
+            <span class="emoji-mascote"><img src="/img/sarue-vetor.png" alt="Saruê"></span>
+            <span>Saruê</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <a href="/turmas" class="btn-cancel">
+          Cancelar
+        </a>
+
+        <button type="submit" class="btn-primary">
+          <i data-lucide="save"></i>
+          <span>Salvar Alterações</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/footer.ejs') %>
