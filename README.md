@@ -1,38 +1,61 @@
 # Zooly Education
 
-O Zooly Education é um sistema educacional desenvolvido para auxiliar professores no gerenciamento de turmas, alunos, atividades e acompanhamento de desempenho escolar de forma prática, moderna e intuitiva.
+O Zooly Education é uma plataforma educacional desenvolvida para apoiar o processo de alfabetização infantil por meio de atividades interativas, histórias educativas e acompanhamento pedagógico.
 
-O projeto foi pensado para tornar o aprendizado mais interativo e organizado, utilizando elementos visuais, mascotes educativos e atividades focadas em desenvolvimento fonético e leitura.
+O sistema foi projetado para auxiliar professores no gerenciamento de turmas, alunos e atividades, tornando o aprendizado mais dinâmico, organizado e acessível.
+
+Além disso, o projeto utiliza elementos lúdicos, mascotes educativos e histórias inspiradas no folclore do Vale do Ribeira, incentivando o desenvolvimento fonético, a leitura e o engajamento das crianças.
 
 ---
 
 ## ✨ Funcionalidades
 
-- Cadastro e gerenciamento de turmas
+- Gerenciamento de turmas
 - Cadastro e gerenciamento de alunos
 - Sistema de mascotes personalizados
 - Criação e edição de atividades
 - Controle de desempenho dos alunos
-- Histórico de desempenho acadêmico
+- Histórico de progresso acadêmico
 - Filtro de atividades por turma
-- Sistema de histórias educativas
+- Biblioteca de histórias educativas
+- Dashboard com métricas educacionais
 - Interface moderna e intuitiva
 - Layout responsivo
-- Dashboard com métricas educacionais
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
+### Back-end
 - Node.js
 - Express
-- EJS
 - Sequelize
 - MySQL
+
+### Front-end
+- EJS
 - HTML5
 - CSS3
 - JavaScript
+
+### Bibliotecas
 - Lucide Icons
+
+---
+
+## 📚 Estrutura do Sistema
+
+O Zooly Education possui um ambiente voltado para professores, permitindo o gerenciamento e acompanhamento completo do processo educacional.
+
+O sistema oferece:
+
+- Organização de turmas
+- Cadastro de alunos
+- Criação de atividades educativas
+- Histórias interativas
+- Acompanhamento de desempenho
+- Métricas de aprendizagem
+- Elementos visuais gamificados
 
 ---
 
@@ -44,33 +67,33 @@ O projeto foi pensado para tornar o aprendizado mais interativo e organizado, ut
 git clone https://github.com/kofitech0-pi/ZoolyEducation.git
 ```
 
----
+### 2. Entre na pasta do projeto
 
-### 2. Instale as dependências
+```bash
+cd ZoolyEducation
+```
+
+### 3. Instale as dependências
 
 ```bash
 npm install
 ```
 
----
-
-### 3. Configure o arquivo `.env`
+### 4. Configure o arquivo `.env`
 
 Renomeie o arquivo:
 
-```bash
+```env
 .env.example
 ```
 
 para:
 
-```bash
+```env
 .env
 ```
 
-Depois configure suas variáveis de ambiente do MySQL.
-
-Exemplo:
+Depois configure as variáveis de ambiente:
 
 ```env
 DB_NAME=zooly
@@ -83,7 +106,7 @@ SESSION_SECRET=zooly_secret
 
 ---
 
-### 4. Execute o projeto
+### 5. Execute o projeto
 
 ```bash
 npm start
@@ -95,6 +118,33 @@ O servidor será iniciado em:
 http://localhost:8080
 ```
 
+---
+
+## 📁 Estrutura do Projeto
+
+```bash
+ZoolyEducation
+│
+├── config
+├── controllers
+├── middlewares
+├── models
+├── public
+│   ├── css
+│   ├── js
+│   ├── imagens
+│
+├── routes
+├── views
+├── .env
+├── app.js
+└── package.json
+```
+
+---
+
 ## 👩‍💻 Desenvolvido por
 
-Projeto acadêmico desenvolvido para o curso de Desenvolvimento de Software Multiplataforma — FATEC Registro.
+Projeto acadêmico desenvolvido para o curso de Desenvolvimento de Software Multiplataforma (DSM) — FATEC Registro.
+
+Equipe: KofiTech
