@@ -142,6 +142,15 @@ ZoolyEducation
 ```
 
 ---
+---
+
+## 🌐 Website da Equipe
+
+Conheça o website institucional da equipe KofiTech, contendo informações sobre os integrantes, projeto e portfólio:
+
+🔗 https://kofitech0-pi.github.io/KofiTech/
+
+---
 
 ## 👩‍💻 Desenvolvido por
 
