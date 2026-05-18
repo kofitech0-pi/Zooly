@@ -70,7 +70,7 @@ git clone https://github.com/kofitech0-pi/ZoolyEducation.git
 ### 2. Entre na pasta do projeto
 
 ```bash
-cd ZoolyEducation
+cd Zooly
 ```
 
 ### 3. Instale as dependências
@@ -123,7 +123,7 @@ http://localhost:8080
 ## 📁 Estrutura do Projeto
 
 ```bash
-ZoolyEducation
+Zooly
 │
 ├── config
 ├── controllers
