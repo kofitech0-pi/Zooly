@@ -14,7 +14,7 @@ function mapearDesempenho(alunos) {
   ];
 
   return alunos.map((aluno, index) => {
-    const progresso = [95, 68, 32, 75][index % 4];
+    const progresso = [95, 68, 32, 75, 85, 40, 92, 15][aluno.id % 8];
 
     let nivel = "Em Alerta";
 
@@ -30,7 +30,7 @@ function mapearDesempenho(alunos) {
       imagem: imagens[index % imagens.length],
       nivel,
       progresso,
-      ultima_atividade: ["Hoje, 09:45", "Ontem", "Há 3 dias", "Ontem"][index % 4],
+      ultima_atividade: ["Hoje, 09:45", "Ontem", "Há 3 dias", "Ontem"][aluno.id % 4],
     };
   });
 }

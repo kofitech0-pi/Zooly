@@ -22,10 +22,8 @@ router.get("/turmas/:turma_id/alunos", async (req, res) => {
 
     const alunosComDados = alunos.map((aluno, index) => ({
       ...aluno.toJSON(),
-      progresso: [85, 40, 92, 15][index % 4],
-      ultimo_acesso: ["Hoje, 10:45", "Ontem, 16:20", "Há 2 horas", "Há 4 dias"][
-        index % 4
-      ],
+      progresso: [95, 68, 32, 75, 85, 40, 92, 15][aluno.id % 8],
+      ultimo_acesso: ["Hoje, 10:45", "Ontem, 16:20", "Há 2 horas", "Há 4 dias"][ aluno.id % 4 ],
     }));
 
     res.render("alunos", {
