@@ -20,6 +20,7 @@ import Aluno from "./models/Aluno.js";
 import Atividade from "./models/Atividade.js";
 import Historia from "./models/Historia.js";
 import Users from "./models/Users.js";
+import "./models/Questao.js";
 
 //  HISTÓRIAS 
 async function seedHistorias() {

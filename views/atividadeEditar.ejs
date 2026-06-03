@@ -526,7 +526,7 @@
     lucide.createIcons();
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
+ document.addEventListener('DOMContentLoaded', function() {
     const hidden = document.getElementById('bnccHidden');
 
     if (hidden && hidden.value.trim() !== '') {
@@ -535,6 +535,46 @@
     }
 
     alternarTipoHistoria();
+
+    const questoesSalvas = <%- JSON.stringify((atividade.questoes || []).map(q => ({
+      tipo: q.tipo,
+      enunciado: q.enunciado,
+      pontos: q.pontos
+    }))) %>;
+
+    questoesSalvas.forEach(q => {
+      questaoCount++;
+      const list = document.getElementById('questoesList');
+      const div = document.createElement('div');
+      div.className = 'questao-item';
+      div.id = 'questao-' + questaoCount;
+
+      div.innerHTML = `
+        <div class="q-numero">${questaoCount}</div>
+        <div class="q-tipo">
+          <select class="na-input-sm" name="q_tipo_${questaoCount}">
+            ${tiposQuestao.map(t => `<option value="${t}" ${t === q.tipo ? 'selected' : ''}>${t}</option>`).join('')}
+          </select>
+        </div>
+        <div class="q-pontos">
+          <input type="number" name="q_pontos_${questaoCount}" value="${q.pontos}" class="na-input-sm q-pontos-input" min="1" max="100" onchange="atualizarPontos()">
+          <span>pts</span>
+        </div>
+        <div class="q-enunciado">
+          <input type="text" name="q_enunciado_${questaoCount}" class="na-input-sm" value="${q.enunciado}" placeholder="Digite o enunciado da questão...">
+        </div>
+        <div class="q-tags"><span class="q-tag-alt">--</span></div>
+        <div class="q-acoes">
+          <button type="button" onclick="removerQuestao(${questaoCount})" class="q-btn-del" title="Excluir questão">
+            <i data-lucide="trash-2"></i>
+          </button>
+        </div>
+      `;
+
+      list.appendChild(div);
+    });
+
+    atualizarPontos();
     lucide.createIcons();
   });
 </script>
